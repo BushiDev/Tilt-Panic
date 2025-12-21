@@ -1,0 +1,43 @@
+using UnityEngine;
+
+public class PlayerTilt : MonoBehaviour{
+
+    public float speed = 20f;
+    Rigidbody2D rigidbody2d;
+
+    void Start(){
+
+        rigidbody2d = GetComponent<Rigidbody2D>();
+
+    }
+
+    void Update(){
+
+        Vector3 tilt = Input.acceleration;
+        Vector3 move = new Vector3(tilt.x, tilt.y, 0f);
+        transform.position += move * speed * Time.deltaTime;
+
+        ClampToScreen();
+
+    }
+
+    void ClampToScreen(){
+
+        Vector3 pos = Camera.main.WorldToViewportPoint(transform.position);
+        pos.x = Mathf.Clamp01(pos.x);
+        pos.y = Mathf.Clamp01(pos.y);
+        transform.position = Camera.main.ViewportToWorldPoint(pos);
+
+    }
+
+    void OnTriggerEnter2D(Collider2D collider2D){
+
+        if(collider2D.tag.Equals("Obstacle")){
+
+            Time.timeScale = 0f;
+
+        }
+
+    }
+
+}
