@@ -3,9 +3,27 @@ using System.Collections;
 
 public class ObstacleSpawner : MonoBehaviour{
 
+    public static ObstacleSpawner instance;
+
     public GameObject prefab;
-    public float spawnDelay = 1.2f;
+    public float spawnDelay = 1.5f;
     public float fallSpeed = 3f;
+
+    public bool isPaused = true;
+
+    void Awake(){
+
+        if(instance != null && instance != this){
+
+            Destroy(gameObject);
+
+        }else{
+
+            instance = this;
+
+        }
+
+    }
 
     void Start(){
 
@@ -17,12 +35,21 @@ public class ObstacleSpawner : MonoBehaviour{
 
         while(true){
 
-            SpawnObstacle();
+            if(!isPaused){
 
-            spawnDelay = Mathf.Max(0.3f, spawnDelay - 0.01f);
-            fallSpeed += 0.02f;
+                SpawnObstacle();
 
-            yield return new WaitForSeconds(spawnDelay);
+                spawnDelay = Mathf.Max(0.2f, spawnDelay - 0.01f);
+                fallSpeed += 0.03f;
+
+                yield return new WaitForSeconds(spawnDelay);
+
+            }else{
+
+                yield return new WaitForSeconds(spawnDelay);
+
+            }
+
 
         }
 
@@ -31,7 +58,7 @@ public class ObstacleSpawner : MonoBehaviour{
     void SpawnObstacle(){
 
         float x = Random.Range(0, 1f);
-        Vector3 pos = Camera.main.ViewportToWorldPoint(new Vector3(x, 1.1f, 0f));
+        Vector3 pos = Camera.main.ViewportToWorldPoint(new Vector3(x, 1.5f, 0f));
         pos.z = 0f;
 
         GameObject o = Instantiate(prefab, pos, Quaternion.Euler(0f, 0f, 180f));

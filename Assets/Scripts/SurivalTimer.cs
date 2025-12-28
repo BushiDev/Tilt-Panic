@@ -3,19 +3,37 @@ using TMPro;
 
 public class SurvivalTimer : MonoBehaviour{
 
+    public static SurvivalTimer instance;
+
     public TMP_Text scoreText;
-    int score;
-    bool isAlive = true;
+    public int score;
+    public bool isAlive;
     float timer;
+
+    void Awake(){
+
+        if(instance != null && instance != this){
+
+            Destroy(gameObject);
+
+        }else{
+
+            instance = this;
+
+        }
+
+    }
 
     void Update(){
 
-        if(!isAlive) return;
+        if(isAlive){
 
-        timer += Time.deltaTime;
+            timer += Time.deltaTime;
 
-        score = Mathf.RoundToInt(timer);
-        scoreText.text = score.ToString();
+            score = Mathf.RoundToInt(timer);
+            scoreText.text = score.ToString();
+
+        }
 
     }
 
