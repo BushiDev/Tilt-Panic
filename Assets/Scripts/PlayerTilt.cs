@@ -1,15 +1,22 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerTilt : MonoBehaviour{
 
     public float speed = 20f;
     Rigidbody2D rigidbody2d;
 
+    InputAction tiltAction;
+
     void Start(){
+
+        InputSystem.EnableDevice(UnityEngine.InputSystem.Gyroscope.current);
 
         Input.gyro.enabled = true;
 
         rigidbody2d = GetComponent<Rigidbody2D>();
+
+        tiltAction = InputSystem.actions.FindAction("Tilt/Tilt");
 
     }
 
@@ -17,8 +24,8 @@ public class PlayerTilt : MonoBehaviour{
 
         if(ObstacleSpawner.instance.isPaused) return;
 
-        Vector3 tilt = Input.acceleration;
-        Vector3 move = new Vector3(tilt.x, 0f, 0f);
+        float tilt = UnityEngine.InputSystem.Gyroscope.current.angularVelocity.ReadValue().x;
+        Vector3 move = new Vector3(tilt, 0f, 0f);
         transform.position += move * speed * Time.deltaTime;
 
         ClampToScreen();
