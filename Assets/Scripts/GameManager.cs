@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour{
         SurvivalTimer.instance.isAlive = true;
         ObstacleSpawner.instance.isPaused = false;
         SurvivalTimer.instance.score = 0;
+        SurvivalTimer.instance.timer = 0f;
 
     }
 
@@ -58,6 +59,9 @@ public class GameManager : MonoBehaviour{
 
         SurvivalTimer.instance.isAlive = false;
         ObstacleSpawner.instance.isPaused = true;
+
+        PlayeGamesManager.instance.LeaderboardUpdate(GPGSIds.leaderboard_top, SurvivalTimer.instance.score);
+
         ShowGameOver(SurvivalTimer.instance.score);
         ResetPlayerPosition();
         RemoveAllObstacles();

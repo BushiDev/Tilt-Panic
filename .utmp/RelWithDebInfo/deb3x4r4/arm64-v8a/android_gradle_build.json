@@ -1,0 +1,47 @@
+{
+  "buildFiles": [
+    "/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/CMakeLists.txt",
+    "/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/FramePacing/CMakeLists.txt",
+    "/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/GameActivity/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/bushi/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/media/bushi/Expansion/Projekty Unity/Tilt Panic/.utmp/RelWithDebInfo/deb3x4r4/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/bushi/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/media/bushi/Expansion/Projekty Unity/Tilt Panic/.utmp/RelWithDebInfo/deb3x4r4/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "game::@d02bb112ea9f9c2ed29f": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "game",
+      "output": "/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/deb3x4r4/obj/arm64-v8a/libgame.so",
+      "runtimeFiles": []
+    },
+    "swappywrapper::@7e25bd1f32ce224db4e9": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "swappywrapper",
+      "output": "/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/deb3x4r4/obj/arm64-v8a/libswappywrapper.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/bushi/Android/Sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/bushi/Android/Sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

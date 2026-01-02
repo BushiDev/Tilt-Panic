@@ -8,7 +8,7 @@ public class SurvivalTimer : MonoBehaviour{
     public TMP_Text scoreText;
     public int score;
     public bool isAlive;
-    float timer;
+    public float timer;
 
     void Awake(){
 

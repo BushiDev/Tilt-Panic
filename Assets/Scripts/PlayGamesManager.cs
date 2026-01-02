@@ -21,6 +21,8 @@ public class PlayeGamesManager : MonoBehaviour{
 
         }
 
+       // PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().Build();
+        //PlayGamesPlatform.InitializeInstance(config);
         PlayGamesPlatform.Activate();
         Login();
 

@@ -7,6 +7,8 @@ public class PlayerTilt : MonoBehaviour{
 
     void Start(){
 
+        Input.gyro.enabled = true;
+
         rigidbody2d = GetComponent<Rigidbody2D>();
 
     }
@@ -16,7 +18,7 @@ public class PlayerTilt : MonoBehaviour{
         if(ObstacleSpawner.instance.isPaused) return;
 
         Vector3 tilt = Input.acceleration;
-        Vector3 move = new Vector3(tilt.x, tilt.y, 0f);
+        Vector3 move = new Vector3(tilt.x, 0f, 0f);
         transform.position += move * speed * Time.deltaTime;
 
         ClampToScreen();
