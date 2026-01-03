@@ -16,8 +16,6 @@ public class PlayerTilt : MonoBehaviour{
 #if UNITY_ANDROID
         InputSystem.EnableDevice(UnityEngine.InputSystem.Accelerometer.current);
 #endif
-
-
         rigidbody2d = GetComponent<Rigidbody2D>();
 
     }

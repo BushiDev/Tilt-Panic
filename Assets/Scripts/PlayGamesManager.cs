@@ -5,9 +5,9 @@ using GooglePlayGames.BasicApi.SavedGame;
 using UnityEngine.SocialPlatforms;
 using System.Text;
 
-public class PlayeGamesManager : MonoBehaviour{
+public class PlayGamesManager : MonoBehaviour{
 
-    public static PlayeGamesManager instance;
+    public static PlayGamesManager instance;
     public PlayerData playerData;
 
     public bool playerSignedIn;
@@ -26,9 +26,9 @@ public class PlayeGamesManager : MonoBehaviour{
 
         }
 
-        PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
+        //PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
 
-        PlayGamesPlatform.InitializeInstance(config);
+        //PlayGamesPlatform.InitializeInstance(config);
         PlayGamesPlatform.Activate();
         Login();
 
@@ -43,6 +43,7 @@ public class PlayeGamesManager : MonoBehaviour{
                 playerSignedIn = true;
                 UIController.instance.HideAll();
                 UIController.instance.ShowSelected(0);
+                LoadGameData();
 
             }else{
 
@@ -96,11 +97,11 @@ public class PlayeGamesManager : MonoBehaviour{
 
         byte[] data = Encoding.UTF8.GetBytes(JsonUtility.ToJson(playerData));
 
-        PlayGamesPlatform.Instance.SavedGame.OpenWithAutomaticConfiltResolution(SAVE_NAME, DataSource.ReadCacheOrNetwork, ConfigResolutionStrategy.UseLongestPlaytime, (status, game) => {
+        PlayGamesPlatform.Instance.SavedGame.OpenWithAutomaticConflictResolution(SAVE_NAME, DataSource.ReadCacheOrNetwork, ConflictResolutionStrategy.UseLongestPlaytime, (status, game) => {
     
-            if(status != SavedGameRequestStatus.success) return;
+            if(status != SavedGameRequestStatus.Success) return;
 
-            SavedGameMetaDataUpdate update = new SavedGameMetaDataUpdate.Builder().Build();
+            SavedGameMetadataUpdate update = new SavedGameMetadataUpdate.Builder().Build();
             PlayGamesPlatform.Instance.SavedGame.CommitUpdate(game, update, data, (commitStatus, commitGame) => {
 
                 Debug.Log("Saved");
@@ -115,16 +116,26 @@ public class PlayeGamesManager : MonoBehaviour{
 
         if(!playerSignedIn) return;
 
-        PlayGamesPlatform.Instance.SavedGame.OpenWithAutomaticConfiltResolution(SAVE_NAME, DataSource.ReadCacheOrNetwork, ConfigResolutionStrategy.UseLongestPlaytime, (status, game) => {
+        PlayGamesPlatform.Instance.SavedGame.OpenWithAutomaticConflictResolution(SAVE_NAME, DataSource.ReadCacheOrNetwork, ConflictResolutionStrategy.UseLongestPlaytime, (status, game) => {
 
             if(status != SavedGameRequestStatus.Success) return;
 
             PlayGamesPlatform.Instance.SavedGame.ReadBinaryData(game, (readStatus, data) => {
 
-                if(readStatus != SavedGameRequestStatus.Success || data.length == 0) return;
+                if(data.Length == 0 || data == null){
+
+                    playerData = new PlayerData();
+                    PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
+                    PlayerPrefs.Save();
+                    
+                }
+
+                if(readStatus != SavedGameRequestStatus.Success) return;
 
                 string loaded = Encoding.UTF8.GetString(data);
                 playerData = JsonUtility.FromJson<PlayerData>(loaded);
+                PlayerPrefs.SetString("PlayerData", loaded);
+                PlayerPrefs.Save();
 
             });
 

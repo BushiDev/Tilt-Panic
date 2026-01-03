@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour{
         if(score > best){
 
             best = score;
+            PlayGamesManager.instance.playerData.bestScore = score;
+            PlayGamesManager.instance.SaveGameData();
 
         }
 
@@ -80,7 +82,7 @@ public class GameManager : MonoBehaviour{
         SurvivalTimer.instance.isAlive = false;
         ObstacleSpawner.instance.isPaused = true;
 
-        PlayeGamesManager.instance.LeaderboardUpdate(GPGSIds.leaderboard_top, SurvivalTimer.instance.score);
+        PlayGamesManager.instance.LeaderboardUpdate(GPGSIds.leaderboard_top, SurvivalTimer.instance.score);
 
         ShowGameOver(SurvivalTimer.instance.score);
         ResetPlayerPosition();
