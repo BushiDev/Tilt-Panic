@@ -6,6 +6,7 @@ public class ObstacleSpawner : MonoBehaviour{
     public static ObstacleSpawner instance;
 
     public GameObject prefab;
+    public GameObject shield;
     public float spawnDelay = 1.5f;
     public float fallSpeed = 3f;
 
@@ -39,7 +40,7 @@ public class ObstacleSpawner : MonoBehaviour{
 
                 SpawnObstacle();
 
-                spawnDelay = Mathf.Max(0.2f, spawnDelay - 0.01f);
+                spawnDelay = Mathf.Max(0.15f, spawnDelay - 0.01f);
                 fallSpeed += 0.03f;
 
                 yield return new WaitForSeconds(spawnDelay);
@@ -61,9 +62,25 @@ public class ObstacleSpawner : MonoBehaviour{
         Vector3 pos = Camera.main.ViewportToWorldPoint(new Vector3(x, 1.5f, 0f));
         pos.z = 0f;
 
-        GameObject o = Instantiate(prefab, pos, Quaternion.Euler(0f, 0f, 180f));
-        o.GetComponent<Rigidbody2D>().linearVelocity = Vector2.down * fallSpeed;
-        Destroy(o, 5f);
+        if(Random.Range(0, 100) > 20){
+
+            GameObject o = Instantiate(prefab, pos, Quaternion.Euler(0f, 0f, 180f));
+            o.GetComponent<Rigidbody2D>().linearVelocity = Vector2.down * fallSpeed;
+            Destroy(o, 5f);
+
+        }else{
+
+            GameObject o = Instantiate(shield, pos, Quaternion.Euler(0f, 0f, 180f));
+            o.GetComponent<Rigidbody2D>().linearVelocity = Vector2.down * fallSpeed / 2f;
+            Destroy(o, 10f);
+        }
+
+    }
+
+    public void Reset(){
+
+        spawnDelay = 1.5f;
+        fallSpeed = 3f;
 
     }
 

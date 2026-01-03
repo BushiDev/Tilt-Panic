@@ -4,7 +4,7 @@ using TMPro;
 public class GameManager : MonoBehaviour{
 
     public static GameManager instance;
-    int best;
+    public int best;
     public TMP_Text scoreText;
     public TMP_Text bestText;
 
@@ -25,16 +25,33 @@ public class GameManager : MonoBehaviour{
     void Start(){
 
         SurvivalTimer.instance.isAlive = false;
-        ObstacleSpawner.instance.isPaused = true;
-        //UIController.instance.HideAll();
-       // UIController.instance.ShowSelected(0);
+        ObstacleSpawner.instance.isPaused = true;     
+
+        if(PlayerPrefs.HasKey("PlayerData")){
+            
+            best = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("PlayerData")).bestScore;
+            
+        }else{
+
+            best = 0;
+            PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(new PlayerData()));
+            PlayerPrefs.Save();
+
+        }
 
     }
+
+    void Update() {
+    if (Time.timeScale == 0f) {
+        Debug.Break(); // zatrzymuje edytor dokładnie w tym momencie
+    }
+}
 
     public void StartGame(){
 
         SurvivalTimer.instance.isAlive = true;
         ObstacleSpawner.instance.isPaused = false;
+        ObstacleSpawner.instance.Reset();
         SurvivalTimer.instance.score = 0;
         SurvivalTimer.instance.timer = 0f;
 
@@ -57,6 +74,9 @@ public class GameManager : MonoBehaviour{
 
     public void GameOver(){
 
+        Debug.Log("Time.timeScale przed: " + Time.timeScale);
+
+
         SurvivalTimer.instance.isAlive = false;
         ObstacleSpawner.instance.isPaused = true;
 
@@ -65,6 +85,13 @@ public class GameManager : MonoBehaviour{
         ShowGameOver(SurvivalTimer.instance.score);
         ResetPlayerPosition();
         RemoveAllObstacles();
+
+        if(Random.Range(0, 100) > 5){
+
+            AdMob.instance.ShowFullscreenAd();
+            Random.seed = Random.Range(int.MinValue, int.MaxValue);
+
+        }
 
     }
 
@@ -78,6 +105,13 @@ public class GameManager : MonoBehaviour{
 
         GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
         foreach(GameObject go in obstacles){
+
+            Destroy(go);
+
+        }
+
+        GameObject[] shields = GameObject.FindGameObjectsWithTag("Shield");
+        foreach(GameObject go in shields){
 
             Destroy(go);
 

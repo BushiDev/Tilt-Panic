@@ -4,30 +4,35 @@ using UnityEngine.InputSystem;
 public class PlayerTilt : MonoBehaviour{
 
     public float speed = 20f;
+    public float deadZone = 0.02f;
     Rigidbody2D rigidbody2d;
 
-    InputAction tiltAction;
+    public float smooth = 8f;
+
+    float currentTilt;
 
     void Start(){
 
-        InputSystem.EnableDevice(UnityEngine.InputSystem.Gyroscope.current);
+#if UNITY_ANDROID
+        InputSystem.EnableDevice(UnityEngine.InputSystem.Accelerometer.current);
+#endif
 
-        Input.gyro.enabled = true;
 
         rigidbody2d = GetComponent<Rigidbody2D>();
-
-        tiltAction = InputSystem.actions.FindAction("Tilt/Tilt");
 
     }
 
     void Update(){
 
         if(ObstacleSpawner.instance.isPaused) return;
-
-        float tilt = UnityEngine.InputSystem.Gyroscope.current.angularVelocity.ReadValue().x;
-        Vector3 move = new Vector3(tilt, 0f, 0f);
-        transform.position += move * speed * Time.deltaTime;
-
+#if UNITY_EDITOR
+        float rawTilt = Random.Range(-1f, 1f);
+#else
+        float rawTilt = Accelerometer.current.acceleration.ReadValue().x;
+#endif
+        if(Mathf.Abs(rawTilt) < deadZone) rawTilt = 0f;
+        currentTilt = Mathf.Lerp(currentTilt, rawTilt, Time.deltaTime * smooth);
+        transform.position += Vector3.right * currentTilt * speed * Time.deltaTime;
         ClampToScreen();
 
     }

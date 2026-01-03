@@ -10,6 +10,10 @@ public class SurvivalTimer : MonoBehaviour{
     public bool isAlive;
     public float timer;
 
+    public float t;
+
+    public float scoreMultiplier;
+
     void Awake(){
 
         if(instance != null && instance != this){
@@ -28,7 +32,8 @@ public class SurvivalTimer : MonoBehaviour{
 
         if(isAlive){
 
-            timer += Time.deltaTime;
+            timer += Time.deltaTime + scoreMultiplier;
+            scoreMultiplier += Time.deltaTime * t;
 
             score = Mathf.RoundToInt(timer);
             scoreText.text = score.ToString();
