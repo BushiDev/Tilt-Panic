@@ -45,12 +45,14 @@ public class Settings : MonoBehaviour{
     public void ToggleMusic(bool value){
 
         settingsData.music = value;
+        AudioManager.instance.UpdateSettings();
 
     }
 
     public void ToggleEffects(bool value){
 
         settingsData.effects = value;
+        AudioManager.instance.UpdateSettings();
 
     }
 

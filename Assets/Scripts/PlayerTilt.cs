@@ -48,6 +48,8 @@ public class PlayerTilt : MonoBehaviour{
 
         if(collider2D.tag.Equals("Obstacle")){
 
+            GetComponent<AudioSource>().Play();
+
             GameManager.instance.GameOver();
 
         }

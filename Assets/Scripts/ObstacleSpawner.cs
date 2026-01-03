@@ -62,7 +62,9 @@ public class ObstacleSpawner : MonoBehaviour{
         Vector3 pos = Camera.main.ViewportToWorldPoint(new Vector3(x, 1.5f, 0f));
         pos.z = 0f;
 
-        if(Random.Range(0, 100) > 20){
+        Random.seed = Random.Range(int.MinValue, int.MaxValue);
+
+        if(Random.Range(0, 100) > 10){
 
             GameObject o = Instantiate(prefab, pos, Quaternion.Euler(0f, 0f, 180f));
             o.GetComponent<Rigidbody2D>().linearVelocity = Vector2.down * fallSpeed;

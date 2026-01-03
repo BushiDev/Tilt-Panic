@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour{
         ResetPlayerPosition();
         RemoveAllObstacles();
 
-        if(Random.Range(0, 100) > 5){
+        if(Random.Range(0, 100) > 75){
 
             AdMob.instance.ShowFullscreenAd();
             Random.seed = Random.Range(int.MinValue, int.MaxValue);
@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour{
 
     void ResetPlayerPosition(){
 
-        GameObject.Find("Player").transform.position = Vector3.zero;
+        GameObject.Find("Player").transform.position = new Vector3(0f, -2f, 0f);
 
     }
 
