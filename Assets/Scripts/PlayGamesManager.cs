@@ -36,9 +36,15 @@ public class PlayGamesManager : MonoBehaviour{
 
     public void Login(){
 
-        PlayGamesPlatform.Instance.Authenticate((success) => {
+        Debug.Log("Trying to login...");
+//PlayGamesPlatform.Instance
+        Social.localUser.Authenticate((success) => {
 
-            if(success == SignInStatus.Success){
+            Debug.Log("Login status: " + success.ToString());
+// == SignInStatus.Success
+            if(success){
+
+                Debug.Log("Login sucess");
 
                 playerSignedIn = true;
                 UIController.instance.HideAll();
@@ -46,6 +52,8 @@ public class PlayGamesManager : MonoBehaviour{
                 LoadGameData();
 
             }else{
+
+                Debug.Log("Login failed");
 
                 playerSignedIn = false;
                 UIController.instance.HideAll();
@@ -71,17 +79,33 @@ public class PlayGamesManager : MonoBehaviour{
 
     public void ShowLeaderboards(){
 
+        if(!playerSignedIn){
+
+            Login();
+            return;
+
+        }
+
         Social.ShowLeaderboardUI();
 
     }
 
     public void ShowAchievements(){
 
+        if(!playerSignedIn){
+
+            Login();
+            return;
+
+        }
+
         Social.ShowAchievementsUI();
 
     }
 
     public void CollectAchievement(string id){
+
+        if(!playerSignedIn) return;
 
         PlayGamesPlatform.Instance.ReportProgress(id, 100.0f, (bool success) => {
 

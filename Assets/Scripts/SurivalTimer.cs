@@ -38,6 +38,12 @@ public class SurvivalTimer : MonoBehaviour{
             score = Mathf.RoundToInt(timer);
             scoreText.text = score.ToString();
 
+            if(score % 100 == 0){
+
+                if(Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(150);
+
+            }
+
         }
 
     }

@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour{
     public TMP_Text scoreText;
     public TMP_Text bestText;
 
+    public Transform player;
+
     void Awake(){
 
         if(instance != null && instance != this){
@@ -54,6 +56,7 @@ public class GameManager : MonoBehaviour{
         ObstacleSpawner.instance.Reset();
         SurvivalTimer.instance.score = 0;
         SurvivalTimer.instance.timer = 0f;
+        AchievementsCollector.instance.useTimer = true;
 
     }
 
@@ -62,27 +65,50 @@ public class GameManager : MonoBehaviour{
         if(score > best){
 
             best = score;
-            PlayGamesManager.instance.playerData.bestScore = score;
-            PlayGamesManager.instance.SaveGameData();
+
+            if(PlayGamesManager.instance != null && PlayGamesManager.instance.playerSignedIn){
+
+                PlayGamesManager.instance.playerData.bestScore = best;
+                PlayGamesManager.instance.SaveGameData();
+
+            }
+
+            PlayerData p = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("PlayerData"));
+            p.bestScore = best;
+
+            PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(p));
+            PlayerPrefs.Save();
+            Debug.Log("New score!!!!");
 
         }
 
-        UIController.instance.HideAll();
-        UIController.instance.ShowSelected(2);
+        if(UIController.instance != null){
+
+            UIController.instance.HideAll();
+            UIController.instance.ShowSelected(2);
+
+        }
+
         scoreText.text = score.ToString();
         bestText.text = best.ToString();
+            
+        if(Shield.instance != null) Shield.instance.isActive = false;
+
+        if(AchievementsCollector.instance != null){
+
+            AchievementsCollector.instance.useTimer = false;
+            AchievementsCollector.instance.OnDeath();
+
+        }
 
     }
 
     public void GameOver(){
 
-        Debug.Log("Time.timeScale przed: " + Time.timeScale);
-
-
         SurvivalTimer.instance.isAlive = false;
         ObstacleSpawner.instance.isPaused = true;
 
-        PlayGamesManager.instance.LeaderboardUpdate(GPGSIds.leaderboard_top, SurvivalTimer.instance.score);
+        if(PlayGamesManager.instance.playerSignedIn) PlayGamesManager.instance.LeaderboardUpdate(GPGSIds.leaderboard_top, SurvivalTimer.instance.score);
 
         ShowGameOver(SurvivalTimer.instance.score);
         ResetPlayerPosition();
@@ -99,7 +125,7 @@ public class GameManager : MonoBehaviour{
 
     void ResetPlayerPosition(){
 
-        GameObject.Find("Player").transform.position = new Vector3(0f, -2f, 0f);
+        player.position = new Vector3(0f, -2f, 0f);
 
     }
 

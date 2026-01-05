@@ -50,6 +50,8 @@ public class PlayerTilt : MonoBehaviour{
 
             GetComponent<AudioSource>().Play();
 
+            if(Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(250);
+
             GameManager.instance.GameOver();
 
         }

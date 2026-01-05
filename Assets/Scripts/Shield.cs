@@ -6,6 +6,11 @@ public class Shield : MonoBehaviour{
     Collider2D myCollider;
     SpriteRenderer spriteRenderer;
 
+    public AudioClip collected;
+    public AudioClip destroyed;
+
+    public AudioSource source;
+
     bool active;
 
     public bool isActive{
@@ -16,6 +21,11 @@ public class Shield : MonoBehaviour{
             active = value;
             spriteRenderer.enabled = active;
             myCollider.enabled = active;
+
+            source.clip = active ? collected : destroyed;
+            source.Play();
+
+            if(Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(100);
 
             
         }

@@ -24,7 +24,12 @@
 
 public static class GPGSIds
 {
+        public const string achievement_shield_off_i_on = "CgkI9JiOq9wfEAIQAw"; // <GPGSID>
+        public const string achievement_too_fast = "CgkI9JiOq9wfEAIQBQ"; // <GPGSID>
+        public const string achievement_still_alive = "CgkI9JiOq9wfEAIQBA"; // <GPGSID>
+        public const string achievement_real_survivor = "CgkI9JiOq9wfEAIQBg"; // <GPGSID>
         public const string leaderboard_top = "CgkI9JiOq9wfEAIQAQ"; // <GPGSID>
+        public const string achievement_first_blood = "CgkI9JiOq9wfEAIQAg"; // <GPGSID>
 
 }
 

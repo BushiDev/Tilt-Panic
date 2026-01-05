@@ -40,8 +40,8 @@ public class ObstacleSpawner : MonoBehaviour{
 
                 SpawnObstacle();
 
-                spawnDelay = Mathf.Max(0.15f, spawnDelay - 0.01f);
-                fallSpeed += 0.03f;
+                spawnDelay = Mathf.Max(0.3f, spawnDelay - 0.01f);
+                fallSpeed += 0.05f;
 
                 yield return new WaitForSeconds(spawnDelay);
 
@@ -72,7 +72,7 @@ public class ObstacleSpawner : MonoBehaviour{
 
         }else{
 
-            GameObject o = Instantiate(shield, pos, Quaternion.Euler(0f, 0f, 180f));
+            GameObject o = Instantiate(shield, pos, Quaternion.identity);
             o.GetComponent<Rigidbody2D>().linearVelocity = Vector2.down * fallSpeed / 2f;
             Destroy(o, 10f);
         }
