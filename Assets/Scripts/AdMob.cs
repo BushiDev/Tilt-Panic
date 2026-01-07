@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using GoogleMobileAds;
 using GoogleMobileAds.Api;
 
@@ -8,13 +9,16 @@ public class AdMob : MonoBehaviour{
 
     public string bottomBannerId = "ca-app-pub-8369690861079353/9109198592";
     public string deathInterstitialId = "ca-app-pub-8369690861079353/7796116927";
+    public string rewardId = "ca-app-pub-8369690861079353/1135533322";
     public AdPosition bannerPosition;
 
     public BannerView bannerView;
 
     AdRequest adRequest;
     InterstitialAd interstitialAd;
-    public RewardedAd rewardedAd;
+    RewardedAd rewardedAd;
+
+    public Action reward;
 
     void Start(){
 
@@ -31,6 +35,7 @@ public class AdMob : MonoBehaviour{
                 bannerView = new BannerView(bottomBannerId, AdSize.Banner, bannerPosition);
                 bannerView.LoadAd(new AdRequest());
                 LoadFullscreenAd();
+                LoadRewardedAd();
 
                 interstitialAd.OnAdFullScreenContentClosed += () => {
                     
@@ -46,6 +51,25 @@ public class AdMob : MonoBehaviour{
                     LoadFullscreenAd();
 
                 };
+
+                rewardedAd.OnAdFullScreenContentClosed += () => {
+
+                    LoadRewardedAd();
+                    Shop.instance.LoadCustomsData();
+                    Shop.instance.UpdateShopUI();
+                    Time.timeScale = 1f;
+
+                };
+
+                rewardedAd.OnAdFullScreenContentFailed += (AdError e) => {
+
+                    Debug.LogError("Rewarded failed: " + e);
+                    Time.timeScale = 1f; // nigdy nie zostawiamy czasu w pause
+                    LoadRewardedAd();
+
+                };
+
+                //rewardedAd.OnAdFullScreenContentClosed += () => {reward();};
 
             }
 
@@ -74,6 +98,45 @@ public class AdMob : MonoBehaviour{
 
             interstitialAd.Show();
             Time.timeScale = 1f;
+
+        }
+
+    }
+
+    public void LoadRewardedAd(){
+
+        adRequest = new AdRequest();
+
+        RewardedAd.Load(rewardId, adRequest, (RewardedAd ad, LoadAdError error) => {
+
+            if(error != null) return;
+            rewardedAd = ad;
+
+        });
+
+    }
+
+    public void ShowRewardedAd(){
+
+        Debug.Log("Showing rewarded ad");
+
+        if(rewardedAd != null && rewardedAd.CanShowAd()){
+
+            rewardedAd.Show((Reward r) => {
+
+                reward?.Invoke();
+                this.reward = null;
+                LoadRewardedAd();
+                Shop.instance.LoadCustomsData();
+                Shop.instance.UpdateShopUI();
+
+            });
+            Time.timeScale = 1f;
+
+        }else{
+
+            Debug.Log("Cannot show rewarder ad");
+            LoadRewardedAd();
 
         }
 

@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour{
 
     public Transform player;
 
+    public GameObject newBestScore;
+
     void Awake(){
 
         if(instance != null && instance != this){
@@ -69,13 +71,19 @@ public class GameManager : MonoBehaviour{
         Debug.Log("bestText: " + (bestText != null));
         Debug.Log("AchievementsCollector: " + (AchievementsCollector.instance != null));
 
+        newBestScore.SetActive(score > best);
+
+        PlayGamesManager.instance.playerData.totalScore += score;
+
         if(score > best){
 
             best = score;
 
+            PlayGamesManager.instance.playerData.bestScore = best;
+            PlayGamesManager.instance.playerData.totalScore += score;
+
             if(PlayGamesManager.instance != null && PlayGamesManager.instance.playerSignedIn){
 
-                PlayGamesManager.instance.playerData.bestScore = best;
                 PlayGamesManager.instance.SaveGameData();
 
             }
@@ -104,13 +112,6 @@ public class GameManager : MonoBehaviour{
 
             AchievementsCollector.instance.useTimer = false;
             AchievementsCollector.instance.OnDeath();
-
-        }
-
-        if(PlayGamesManager.instance != null && PlayGamesManager.instance.playerSignedIn){
-
-            PlayGamesManager.instance.playerData.totalScore += score;
-            PlayGamesManager.instance.SaveGameData();
 
         }
 

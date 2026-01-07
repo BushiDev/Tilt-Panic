@@ -65,10 +65,17 @@ public class PlayGamesManager : MonoBehaviour{
 
                     playerData = new PlayerData();
                     PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
+                    PlayerPrefs.Save();
 
                 }else{
 
                     playerData = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("PlayerData"));
+
+                    if(playerData.version != (new PlayerData()).version){
+
+                        playerData = RestoreVersion(playerData);
+
+                    }
 
                 }
 
@@ -77,6 +84,32 @@ public class PlayGamesManager : MonoBehaviour{
             }
 
         });
+
+    }
+
+    PlayerData RestoreVersion(PlayerData playerData){
+
+        PlayerData t = new PlayerData();
+
+        t.bestScore = playerData.bestScore;
+        t.totalScore = playerData.totalScore;
+
+        t.playerColorsUnlocked = RestoreBoolArray(playerData.playerColorsUnlocked, 9);
+        t.playerSkinsUnlocked  = RestoreBoolArray(playerData.playerSkinsUnlocked, 6);
+        t.shieldColorsUnlocked = RestoreBoolArray(playerData.shieldColorsUnlocked, 9);
+        t.shieldSkinsUnlocked  = RestoreBoolArray(playerData.shieldSkinsUnlocked, 3);
+
+        t.playerSkinsWatchedAds = playerData.playerSkinsWatchedAds;
+        t.playerColorsWatchedAds = playerData.playerColorsWatchedAds;
+        t.shieldSkinsWatchedAds = playerData.shieldSkinsWatchedAds;
+        t.shieldColorsWatchedAds = playerData.shieldColorsWatchedAds;
+
+        t.playerColor = playerData.playerColor;
+        t.playerSkin = playerData.playerSkin;
+        t.shieldColor = playerData.shieldColor;
+        t.shieldSkin = playerData.shieldSkin;
+
+        return t;
 
     }
 
@@ -173,7 +206,12 @@ public class PlayGamesManager : MonoBehaviour{
 
                     string loaded = Encoding.UTF8.GetString(data);
                     playerData = JsonUtility.FromJson<PlayerData>(loaded);
-                    PlayerPrefs.SetString("PlayerData", loaded);
+                    if(playerData.version != (new PlayerData()).version){
+
+                        playerData = RestoreVersion(playerData);
+
+                    }
+                    PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
                     PlayerPrefs.Save();
 
                     Shop.instance.LoadCustomsData();
@@ -186,10 +224,28 @@ public class PlayGamesManager : MonoBehaviour{
 
     }
 
+    bool[] RestoreBoolArray(bool[] oldArr, int newSize){
+
+        bool[] arr = new bool[newSize];
+        if(oldArr != null){
+
+            for(int i = 0; i < Mathf.Min(oldArr.Length, newSize); i++){
+
+                arr[i] = oldArr[i];
+
+            }
+
+        }
+
+        return arr;
+    }
+
 }
 
 [System.Serializable]
 public class PlayerData{
+
+    public int version;
 
     public int totalScore;
 
@@ -211,6 +267,8 @@ public class PlayerData{
     public int shieldColor = 0;
 
     public PlayerData(){
+
+        version = 1;
 
         totalScore = 0;
 
