@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 1}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: b6b5c6852516eb7b484b43e0165bf959, type: 3}
+  m_Sprite: {fileID: 7788020138054186290, guid: d14be90effb5ab81bb4c8ecf36808357, type: 3}
   m_Color: {r: 0.16140087, g: 0.8773585, b: 0.8773585, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9e4da4a494cb7044acdeb8726cefff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShieldItem
+  particlesPrefab: {fileID: 5725178478347314588, guid: 423e7a0c18faffcd1a53bbfa511a7584, type: 3}
 --- !u!50 &3807365365366419061
 Rigidbody2D:
   serializedVersion: 5
@@ -168,4 +169,4 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 2.1
+  m_Radius: 0.5

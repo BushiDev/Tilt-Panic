@@ -62,6 +62,13 @@ public class GameManager : MonoBehaviour{
 
     public void ShowGameOver(int score){
 
+        Debug.Log("ShowGameOver START");
+
+        Debug.Log("UIController: " + (UIController.instance != null));
+        Debug.Log("scoreText: " + (scoreText != null));
+        Debug.Log("bestText: " + (bestText != null));
+        Debug.Log("AchievementsCollector: " + (AchievementsCollector.instance != null));
+
         if(score > best){
 
             best = score;
@@ -84,7 +91,6 @@ public class GameManager : MonoBehaviour{
 
         if(UIController.instance != null){
 
-            UIController.instance.HideAll();
             UIController.instance.ShowSelected(2);
 
         }
@@ -101,18 +107,22 @@ public class GameManager : MonoBehaviour{
 
         }
 
+        if(PlayGamesManager.instance != null && PlayGamesManager.instance.playerSignedIn){
+
+            PlayGamesManager.instance.playerData.totalScore += score;
+            PlayGamesManager.instance.SaveGameData();
+
+        }
+
     }
 
     public void GameOver(){
-
-        SurvivalTimer.instance.isAlive = false;
-        ObstacleSpawner.instance.isPaused = true;
 
         if(PlayGamesManager.instance.playerSignedIn) PlayGamesManager.instance.LeaderboardUpdate(GPGSIds.leaderboard_top, SurvivalTimer.instance.score);
 
         ShowGameOver(SurvivalTimer.instance.score);
         ResetPlayerPosition();
-        RemoveAllObstacles();
+        
 
         if(Random.Range(0, 100) > 75){
 
@@ -129,7 +139,7 @@ public class GameManager : MonoBehaviour{
 
     }
 
-    void RemoveAllObstacles(){
+    public void RemoveAllObstacles(){
 
         GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
         foreach(GameObject go in obstacles){

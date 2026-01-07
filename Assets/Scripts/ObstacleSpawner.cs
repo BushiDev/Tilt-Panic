@@ -66,15 +66,15 @@ public class ObstacleSpawner : MonoBehaviour{
 
         if(Random.Range(0, 100) > 10){
 
-            GameObject o = Instantiate(prefab, pos, Quaternion.Euler(0f, 0f, 180f));
+            GameObject o = Instantiate(prefab, pos, Quaternion.identity);
             o.GetComponent<Rigidbody2D>().linearVelocity = Vector2.down * fallSpeed;
-            Destroy(o, 5f);
+            Destroy(o, 10f);
 
         }else{
 
             GameObject o = Instantiate(shield, pos, Quaternion.identity);
             o.GetComponent<Rigidbody2D>().linearVelocity = Vector2.down * fallSpeed / 2f;
-            Destroy(o, 10f);
+            Destroy(o, 15f);
         }
 
     }

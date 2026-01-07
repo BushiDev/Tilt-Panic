@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ShieldItem : MonoBehaviour{
+public class ShieldItem : Obstacle{
 
     void OnTriggerEnter2D(Collider2D collider){
 

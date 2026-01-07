@@ -1,0 +1,3 @@
+/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/CMakeLists.txt
+/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/FramePacing/CMakeLists.txt
+/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/GameActivity/CMakeLists.txt

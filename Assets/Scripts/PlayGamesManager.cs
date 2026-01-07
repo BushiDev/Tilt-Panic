@@ -16,6 +16,8 @@ public class PlayGamesManager : MonoBehaviour{
 
     void Start(){
 
+        Debug.Log("PLAYER DATA IS: " + PlayerPrefs.GetString("PlayerData"));
+
         if(instance != null && instance != this){
 
             Destroy(gameObject);
@@ -58,6 +60,19 @@ public class PlayGamesManager : MonoBehaviour{
                 playerSignedIn = false;
                 UIController.instance.HideAll();
                 UIController.instance.ShowSelected(3);
+
+                if(!PlayerPrefs.HasKey("PlayerData") ||  string.IsNullOrEmpty(PlayerPrefs.GetString("PlayerData"))){
+
+                    playerData = new PlayerData();
+                    PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
+
+                }else{
+
+                    playerData = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("PlayerData"));
+
+                }
+
+                Shop.instance.LoadCustomsData();
 
             }
 
@@ -152,14 +167,18 @@ public class PlayGamesManager : MonoBehaviour{
                     PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
                     PlayerPrefs.Save();
                     
+                }else{
+
+                    if(readStatus != SavedGameRequestStatus.Success) return;
+
+                    string loaded = Encoding.UTF8.GetString(data);
+                    playerData = JsonUtility.FromJson<PlayerData>(loaded);
+                    PlayerPrefs.SetString("PlayerData", loaded);
+                    PlayerPrefs.Save();
+
+                    Shop.instance.LoadCustomsData();
+
                 }
-
-                if(readStatus != SavedGameRequestStatus.Success) return;
-
-                string loaded = Encoding.UTF8.GetString(data);
-                playerData = JsonUtility.FromJson<PlayerData>(loaded);
-                PlayerPrefs.SetString("PlayerData", loaded);
-                PlayerPrefs.Save();
 
             });
 
@@ -172,11 +191,52 @@ public class PlayGamesManager : MonoBehaviour{
 [System.Serializable]
 public class PlayerData{
 
+    public int totalScore;
+
     public int bestScore;
+
+    public bool[] playerColorsUnlocked;
+    public bool[] playerSkinsUnlocked;
+    public bool[] shieldColorsUnlocked;
+    public bool[] shieldSkinsUnlocked;
+
+    public int[] playerColorsWatchedAds;
+    public int[] playerSkinsWatchedAds;
+    public int[] shieldColorsWatchedAds;
+    public int[] shieldSkinsWatchedAds;
+
+    public int playerSkin = 0;
+    public int playerColor = 0;
+    public int shieldSkin = 0;
+    public int shieldColor = 0;
 
     public PlayerData(){
 
+        totalScore = 0;
+
         bestScore = 0;
+
+        playerColorsUnlocked = new bool[9];
+        playerColorsUnlocked[0] = true;
+
+        playerSkinsUnlocked = new bool[6];
+        playerSkinsUnlocked[0] = true;
+
+        shieldColorsUnlocked = new bool[9];
+        shieldColorsUnlocked[0] = true;
+        
+        shieldSkinsUnlocked = new bool[3];
+        shieldSkinsUnlocked[0] = true;
+
+        playerColorsWatchedAds = new int[9];
+        playerSkinsWatchedAds = new int[6];
+        shieldColorsWatchedAds = new int[9];
+        shieldSkinsWatchedAds = new int[3];
+
+        playerSkin = 0;
+        playerColor = 0;
+        shieldSkin = 0;
+        shieldColor = 0;
 
     }
 

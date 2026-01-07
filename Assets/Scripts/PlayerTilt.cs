@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class PlayerTilt : MonoBehaviour{
 
     public float speed = 20f;
     public float deadZone = 0.02f;
     Rigidbody2D rigidbody2d;
+    public SpriteRenderer spriteRenderer;
+    public GameObject deathParticles;
 
     public float smooth = 8f;
 
@@ -17,6 +20,7 @@ public class PlayerTilt : MonoBehaviour{
         InputSystem.EnableDevice(UnityEngine.InputSystem.Accelerometer.current);
 #endif
         rigidbody2d = GetComponent<Rigidbody2D>();
+
 
     }
 
@@ -52,9 +56,36 @@ public class PlayerTilt : MonoBehaviour{
 
             if(Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(250);
 
-            GameManager.instance.GameOver();
+            StartCoroutine(Die());
 
         }
+
+    }
+
+    IEnumerator Die(){
+
+        CameraHitZoom.instance.Hit(transform.position);
+        SurvivalTimer.instance.isAlive = false;
+        ObstacleSpawner.instance.isPaused = true;
+
+        yield return new WaitForSeconds(0.2f);
+
+        Time.timeScale = 0.6f;
+
+        UIController.instance.HideAll();
+        GameManager.instance.RemoveAllObstacles();
+        spriteRenderer.enabled = false;
+        GameObject go = Instantiate(deathParticles, transform.position, Quaternion.Euler(90f, 0f, 0f));
+        Destroy(go, 2.5f);
+
+        yield return new WaitForSeconds(0.5f);
+
+        Time.timeScale = 1f;
+
+        yield return new WaitForSeconds(1f);
+
+        GameManager.instance.GameOver();
+        spriteRenderer.enabled = true;
 
     }
 

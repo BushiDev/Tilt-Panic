@@ -14,6 +14,7 @@ public class AdMob : MonoBehaviour{
 
     AdRequest adRequest;
     InterstitialAd interstitialAd;
+    public RewardedAd rewardedAd;
 
     void Start(){
 
