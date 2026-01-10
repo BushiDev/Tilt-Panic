@@ -183,4 +183,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51b62a77379b855b18f8fa0d0824bd2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Obstacle
-  particlesPrefab: {fileID: 8035908109888733722, guid: f3f2ffa825637fe268137eeabb14e5ee, type: 3}
+  particlesPrefab: {fileID: 5725178478347314588, guid: 423e7a0c18faffcd1a53bbfa511a7584, type: 3}

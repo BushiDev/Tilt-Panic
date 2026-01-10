@@ -14,6 +14,8 @@ public class SurvivalTimer : MonoBehaviour{
 
     public float scoreMultiplier;
 
+    public GameObject invert;
+
     void Awake(){
 
         if(instance != null && instance != this){
@@ -23,10 +25,14 @@ public class SurvivalTimer : MonoBehaviour{
         }else{
 
             instance = this;
+            DontDestroyOnLoad(gameObject);
 
         }
 
     }
+
+    public int lastScoreInvertUpdate = 200;
+    public int lastScoreVibrationUpdate = 100;
 
     void Update(){
 
@@ -38,14 +44,25 @@ public class SurvivalTimer : MonoBehaviour{
             score = Mathf.RoundToInt(timer);
             scoreText.text = score.ToString();
 
-            if(score % 100 == 0){
+            if(score > lastScoreVibrationUpdate){
+
+                lastScoreVibrationUpdate += 100;
 
                 if(Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(150);
+
+            }
+
+            if(score > lastScoreInvertUpdate){
+
+                lastScoreInvertUpdate += 200;
+
+                invert.SetActive(!invert.activeSelf);
 
             }
 
         }
 
     }
+
 
 }

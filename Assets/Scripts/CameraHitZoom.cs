@@ -12,9 +12,20 @@ public class CameraHitZoom : MonoBehaviour{
     public float zoomInTime = 0.1f;
     public float zoomOutTime = 0.05f;
 
+    Coroutine zoomCoroutine;
+
     void Awake(){
 
-        instance = this;
+        if(instance != null && instance != this){
+
+            Destroy(gameObject);
+
+        }else{
+
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+
+        }
 
     }
 
@@ -28,8 +39,9 @@ public class CameraHitZoom : MonoBehaviour{
 
     public void Hit(Vector3 position){
 
-        StopAllCoroutines();
-        StartCoroutine(Zoom(position));
+        if(zoomCoroutine != null) StopCoroutine(zoomCoroutine);
+
+        zoomCoroutine = StartCoroutine(Zoom(position));
 
     }
 
@@ -50,7 +62,7 @@ public class CameraHitZoom : MonoBehaviour{
 
         }
 
-        yield return new WaitForSeconds(zoomInTime * 2f);
+        yield return new WaitForSecondsRealtime(zoomInTime * 2f);
 
         t = 0f;
 

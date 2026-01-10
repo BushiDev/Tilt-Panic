@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour{
         }else{
 
             instance = this;
+            DontDestroyOnLoad(gameObject);
 
         }
 
@@ -45,12 +46,6 @@ public class GameManager : MonoBehaviour{
 
     }
 
-    void Update() {
-    if (Time.timeScale == 0f) {
-        Debug.Break(); // zatrzymuje edytor dokładnie w tym momencie
-    }
-}
-
     public void StartGame(){
 
         SurvivalTimer.instance.isAlive = true;
@@ -64,27 +59,23 @@ public class GameManager : MonoBehaviour{
 
     public void ShowGameOver(int score){
 
-        Debug.Log("ShowGameOver START");
-
-        Debug.Log("UIController: " + (UIController.instance != null));
-        Debug.Log("scoreText: " + (scoreText != null));
-        Debug.Log("bestText: " + (bestText != null));
-        Debug.Log("AchievementsCollector: " + (AchievementsCollector.instance != null));
+        SurvivalTimer.instance.invert.SetActive(false);
 
         newBestScore.SetActive(score > best);
 
         PlayGamesManager.instance.playerData.totalScore += score;
+        SurvivalTimer.instance.lastScoreInvertUpdate = 200;
+        SurvivalTimer.instance.lastScoreVibrationUpdate = 100;
 
         if(score > best){
 
             best = score;
 
-            PlayGamesManager.instance.playerData.bestScore = best;
-            PlayGamesManager.instance.playerData.totalScore += score;
+            if(PlayGamesManager.instance != null){
 
-            if(PlayGamesManager.instance != null && PlayGamesManager.instance.playerSignedIn){
+                PlayGamesManager.instance.playerData.bestScore = best;
 
-                PlayGamesManager.instance.SaveGameData();
+                if(PlayGamesManager.instance.playerSignedIn) PlayGamesManager.instance.SaveGameData();
 
             }
 
@@ -125,10 +116,9 @@ public class GameManager : MonoBehaviour{
         ResetPlayerPosition();
         
 
-        if(Random.Range(0, 100) > 75){
+        if(Random.Range(0, 100) > 60){
 
             AdMob.instance.ShowFullscreenAd();
-            Random.seed = Random.Range(int.MinValue, int.MaxValue);
 
         }
 

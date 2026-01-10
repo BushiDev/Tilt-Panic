@@ -14,9 +14,7 @@ public class PlayGamesManager : MonoBehaviour{
 
     const string SAVE_NAME = "TiltPanic_Save";
 
-    void Start(){
-
-        Debug.Log("PLAYER DATA IS: " + PlayerPrefs.GetString("PlayerData"));
+    void Awake(){
 
         if(instance != null && instance != this){
 
@@ -25,41 +23,43 @@ public class PlayGamesManager : MonoBehaviour{
         }else{
 
             instance = this;
+            DontDestroyOnLoad(gameObject);
 
         }
 
-        //PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().EnableSavedGames().Build();
+    }
 
-        //PlayGamesPlatform.InitializeInstance(config);
+    void Start(){
+
         PlayGamesPlatform.Activate();
         Login();
-
     }
 
     public void Login(){
 
-        Debug.Log("Trying to login...");
-//PlayGamesPlatform.Instance
         Social.localUser.Authenticate((success) => {
 
-            Debug.Log("Login status: " + success.ToString());
-// == SignInStatus.Success
             if(success){
 
-                Debug.Log("Login sucess");
-
                 playerSignedIn = true;
-                UIController.instance.HideAll();
-                UIController.instance.ShowSelected(0);
+                if(UIController.instance != null){
+
+                    UIController.instance.HideAll();
+                    UIController.instance.ShowSelected(0);
+
+                }
+
                 LoadGameData();
 
             }else{
 
-                Debug.Log("Login failed");
-
                 playerSignedIn = false;
-                UIController.instance.HideAll();
-                UIController.instance.ShowSelected(3);
+                if(UIController.instance != null){
+
+                    UIController.instance.HideAll();
+                    UIController.instance.ShowSelected(3);
+
+                }
 
                 if(!PlayerPrefs.HasKey("PlayerData") ||  string.IsNullOrEmpty(PlayerPrefs.GetString("PlayerData"))){
 
@@ -194,7 +194,7 @@ public class PlayGamesManager : MonoBehaviour{
 
             PlayGamesPlatform.Instance.SavedGame.ReadBinaryData(game, (readStatus, data) => {
 
-                if(data.Length == 0 || data == null){
+                if(data == null || data.Length == 0){
 
                     playerData = new PlayerData();
                     PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));

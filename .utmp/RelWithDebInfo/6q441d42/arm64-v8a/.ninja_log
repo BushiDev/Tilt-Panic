@@ -1,23 +1,23 @@
 # ninja log v5
-0	8880	1767655836550000000	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	6ade80a1539894ca
-6707	7666	1767655835370000000	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	ab1416b7593aaa2f
-31	6165	1767655833860000000	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	c7d9f91080ebc163
-26	8953	1767655836630000000	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	41d891d2898b3b08
-12	6688	1767655834380000000	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	b23d2ddc0fffe3df
-16	6705	1767655834390000000	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	c4614771a5d38ae1
-12460	12572	1767655840280000000	/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6q441d42/obj/arm64-v8a/libgame.so	88fd100788345a7c
-13	6944	1767655834580000000	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	77d86006d6052038
-7671	7885	1767655835590000000	/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6q441d42/obj/arm64-v8a/libswappywrapper.so	d768be25f2620083
-6192	11472	1767655839160000000	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	fd041861f5d0473f
-6688	12460	1767655840160000000	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	899e6623fe63842
-77	5131	1767732550790000000	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	c4614771a5d38ae1
-89	5331	1767732550970000000	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	c7d9f91080ebc163
-54	5411	1767732551050000000	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	b23d2ddc0fffe3df
-64	5710	1767732551340000000	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	77d86006d6052038
-5413	5912	1767732551590000000	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	ab1416b7593aaa2f
-5912	6139	1767732551820000000	/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6q441d42/obj/arm64-v8a/libswappywrapper.so	d768be25f2620083
-78	6443	1767732552110000000	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	41d891d2898b3b08
-20	6843	1767732552510000000	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	6ade80a1539894ca
-5132	7451	1767732553130000000	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	fd041861f5d0473f
-5331	7594	1767732553260000000	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	899e6623fe63842
-7594	7658	1767732553330000000	/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6q441d42/obj/arm64-v8a/libgame.so	88fd100788345a7c
+26	10887	1767917736040000000	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	6ade80a1539894ca
+8424	9423	1767917734610000000	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	ab1416b7593aaa2f
+101	7115	1767917732280000000	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	c7d9f91080ebc163
+92	9007	1767917734180000000	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	41d891d2898b3b08
+26	7220	1767917732350000000	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	b23d2ddc0fffe3df
+58	8423	1767917733590000000	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	c4614771a5d38ae1
+12416	12570	1767917737750000000	/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6q441d42/obj/arm64-v8a/libgame.so	88fd100788345a7c
+43	8561	1767917733720000000	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	77d86006d6052038
+9423	9659	1767917734840000000	/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6q441d42/obj/arm64-v8a/libswappywrapper.so	d768be25f2620083
+7117	12414	1767917737560000000	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	fd041861f5d0473f
+7221	12400	1767917737560000000	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	899e6623fe63842
+10	6539	1767918196990000000	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	c7d9f91080ebc163
+9	6903	1767918197390000000	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	c4614771a5d38ae1
+9	7528	1767918198010000000	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	b23d2ddc0fffe3df
+9	8270	1767918198740000000	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	77d86006d6052038
+7528	8397	1767918198880000000	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	ab1416b7593aaa2f
+10	8812	1767918199290000000	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	41d891d2898b3b08
+8398	8860	1767918199350000000	/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6q441d42/obj/arm64-v8a/libswappywrapper.so	d768be25f2620083
+8	11363	1767918201830000000	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	6ade80a1539894ca
+6539	11390	1767918201880000000	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	fd041861f5d0473f
+6904	13297	1767918203800000000	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	899e6623fe63842
+13300	13388	1767918203890000000	/media/bushi/Expansion/Projekty Unity/Tilt Panic/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6q441d42/obj/arm64-v8a/libgame.so	88fd100788345a7c

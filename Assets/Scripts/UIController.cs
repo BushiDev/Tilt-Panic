@@ -15,6 +15,7 @@ public class UIController : MonoBehaviour{
         }else{
 
             instance = this;
+            DontDestroyOnLoad(gameObject);
 
         }
 

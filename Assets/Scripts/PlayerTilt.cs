@@ -6,7 +6,6 @@ public class PlayerTilt : MonoBehaviour{
 
     public float speed = 20f;
     public float deadZone = 0.02f;
-    Rigidbody2D rigidbody2d;
     public SpriteRenderer spriteRenderer;
     public GameObject deathParticles;
 
@@ -14,13 +13,17 @@ public class PlayerTilt : MonoBehaviour{
 
     float currentTilt;
 
+    AudioSource audioSource;
+    Camera mainCamera;
+
     void Start(){
 
 #if UNITY_ANDROID
         InputSystem.EnableDevice(UnityEngine.InputSystem.Accelerometer.current);
 #endif
-        rigidbody2d = GetComponent<Rigidbody2D>();
 
+        audioSource = GetComponent<AudioSource>();
+        mainCamera = Camera.main;
 
     }
 
@@ -41,10 +44,10 @@ public class PlayerTilt : MonoBehaviour{
 
     void ClampToScreen(){
 
-        Vector3 pos = Camera.main.WorldToViewportPoint(transform.position);
+        Vector3 pos = mainCamera.WorldToViewportPoint(transform.position);
         pos.x = Mathf.Clamp01(pos.x);
         pos.y = Mathf.Clamp01(pos.y);
-        transform.position = Camera.main.ViewportToWorldPoint(pos);
+        transform.position = mainCamera.ViewportToWorldPoint(pos);
 
     }
 
@@ -52,7 +55,7 @@ public class PlayerTilt : MonoBehaviour{
 
         if(collider2D.tag.Equals("Obstacle")){
 
-            GetComponent<AudioSource>().Play();
+            audioSource.Play();
 
             if(Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(250);
 
@@ -70,22 +73,24 @@ public class PlayerTilt : MonoBehaviour{
 
         yield return new WaitForSeconds(0.2f);
 
-        Time.timeScale = 0.6f;
+        Time.timeScale = 0.75f;
 
         UIController.instance.HideAll();
         GameManager.instance.RemoveAllObstacles();
         spriteRenderer.enabled = false;
-        GameObject go = Instantiate(deathParticles, transform.position, Quaternion.Euler(90f, 0f, 0f));
+        GameObject go = Instantiate(deathParticles, transform.position, Quaternion.identity);
+        var main = go.GetComponent<ParticleSystem>().main;
+        main.startColor = spriteRenderer.color;
         Destroy(go, 2.5f);
-
+        //jest jak chce, wiem ze timescale wplywa. zostaje
         yield return new WaitForSeconds(0.5f);
 
         Time.timeScale = 1f;
 
         yield return new WaitForSeconds(1f);
 
-        GameManager.instance.GameOver();
         spriteRenderer.enabled = true;
+        GameManager.instance.GameOver();
 
     }
 

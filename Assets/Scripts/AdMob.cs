@@ -1,6 +1,4 @@
 using UnityEngine;
-using System;
-using GoogleMobileAds;
 using GoogleMobileAds.Api;
 
 public class AdMob : MonoBehaviour{
@@ -10,19 +8,33 @@ public class AdMob : MonoBehaviour{
     public string bottomBannerId = "ca-app-pub-8369690861079353/9109198592";
     public string deathInterstitialId = "ca-app-pub-8369690861079353/7796116927";
     public string rewardId = "ca-app-pub-8369690861079353/1135533322";
+
     public AdPosition bannerPosition;
 
-    public BannerView bannerView;
+    BannerView bannerView;
 
     AdRequest adRequest;
     InterstitialAd interstitialAd;
     RewardedAd rewardedAd;
 
-    public Action reward;
+    public System.Action reward;
+
+    void Awake(){
+
+        if(instance != null && instance != this){
+
+            Destroy(gameObject);
+
+        }else{
+
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+
+        }
+
+    }
 
     void Start(){
-
-        instance = this;
 
         MobileAds.Initialize((InitializationStatus status) => {
 
@@ -34,42 +46,9 @@ public class AdMob : MonoBehaviour{
 
                 bannerView = new BannerView(bottomBannerId, AdSize.Banner, bannerPosition);
                 bannerView.LoadAd(new AdRequest());
+
                 LoadFullscreenAd();
                 LoadRewardedAd();
-
-                interstitialAd.OnAdFullScreenContentClosed += () => {
-                    
-                    LoadFullscreenAd();
-                    Time.timeScale = 1f;
-                    
-                };
-
-                interstitialAd.OnAdFullScreenContentFailed += (AdError e) => {
-
-                    Debug.LogError("Interstitial failed: " + e);
-                    Time.timeScale = 1f; // nigdy nie zostawiamy czasu w pause
-                    LoadFullscreenAd();
-
-                };
-
-                rewardedAd.OnAdFullScreenContentClosed += () => {
-
-                    LoadRewardedAd();
-                    Shop.instance.LoadCustomsData();
-                    Shop.instance.UpdateShopUI();
-                    Time.timeScale = 1f;
-
-                };
-
-                rewardedAd.OnAdFullScreenContentFailed += (AdError e) => {
-
-                    Debug.LogError("Rewarded failed: " + e);
-                    Time.timeScale = 1f; // nigdy nie zostawiamy czasu w pause
-                    LoadRewardedAd();
-
-                };
-
-                //rewardedAd.OnAdFullScreenContentClosed += () => {reward();};
 
             }
 
@@ -84,21 +63,40 @@ public class AdMob : MonoBehaviour{
 
             if(error != null) return;
 
+            if(interstitialAd != null){
+
+                interstitialAd.OnAdFullScreenContentClosed -= LoadFullscreenAd;
+                interstitialAd.OnAdFullScreenContentFailed -= ContentFailed;
+                interstitialAd.OnAdFullScreenContentClosed -= ResumeGame;
+                interstitialAd.OnAdFullScreenContentFailed -= ContentFailed;
+
+            }
+
             interstitialAd = ad;
+
+            if(interstitialAd != null){
+
+                interstitialAd.OnAdFullScreenContentClosed += LoadFullscreenAd;
+                interstitialAd.OnAdFullScreenContentFailed += ContentFailed;
+                interstitialAd.OnAdFullScreenContentClosed += ResumeGame;
+                interstitialAd.OnAdFullScreenContentFailed += ContentFailed;
+
+            }
 
         });
 
     }
 
-    public void ShowFullscreenAd(){
+    void ContentFailed(AdError e){ResumeGame();}
 
-        Debug.Log("Showing fullscreen ad");
+    public void ShowFullscreenAd(){
 
         if(interstitialAd != null && interstitialAd.CanShowAd()){
 
+            Time.timeScale = 0f;
+            
             interstitialAd.Show();
-            Time.timeScale = 1f;
-
+            
         }
 
     }
@@ -110,35 +108,70 @@ public class AdMob : MonoBehaviour{
         RewardedAd.Load(rewardId, adRequest, (RewardedAd ad, LoadAdError error) => {
 
             if(error != null) return;
+
+            if(rewardedAd != null){
+
+                rewardedAd.OnAdFullScreenContentFailed -= RewardFailed;
+                rewardedAd.OnAdFullScreenContentClosed -= ResumeGame;
+                rewardedAd.OnAdFullScreenContentClosed -= RewardClosed;
+
+            }
             rewardedAd = ad;
+
+            if(rewardedAd != null){
+
+                rewardedAd.OnAdFullScreenContentFailed += RewardFailed;
+                rewardedAd.OnAdFullScreenContentClosed += ResumeGame;
+                rewardedAd.OnAdFullScreenContentClosed += RewardClosed;
+
+            }
 
         });
 
     }
 
-    public void ShowRewardedAd(){
+    void RewardClosed(){
 
-        Debug.Log("Showing rewarded ad");
+        LoadRewardedAd();
+        Shop.instance.LoadCustomsData();
+        Shop.instance.UpdateShopUI();
+
+    }
+
+    void RewardFailed(AdError error){
+
+        LoadRewardedAd();
+        ResumeGame();
+
+    }
+
+    public void ShowRewardedAd(){
 
         if(rewardedAd != null && rewardedAd.CanShowAd()){
 
+            Time.timeScale = 0f;
+
             rewardedAd.Show((Reward r) => {
+
+                if(reward == null) return;
 
                 reward?.Invoke();
                 this.reward = null;
-                LoadRewardedAd();
-                Shop.instance.LoadCustomsData();
-                Shop.instance.UpdateShopUI();
 
             });
-            Time.timeScale = 1f;
 
         }else{
 
-            Debug.Log("Cannot show rewarder ad");
+            UIController.instance.ShowSelected(7);
             LoadRewardedAd();
 
         }
+
+    }
+
+    void ResumeGame(){
+
+        Time.timeScale = 1f;
 
     }
 

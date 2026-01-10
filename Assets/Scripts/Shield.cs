@@ -25,7 +25,7 @@ public class Shield : MonoBehaviour{
             source.clip = active ? collected : destroyed;
             source.Play();
 
-            if(Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(100);
+            if(Settings.instance != null && Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(100);
 
             
         }
@@ -34,7 +34,16 @@ public class Shield : MonoBehaviour{
 
     void Awake(){
 
-        instance = this;
+        if(instance != null && instance != this){
+
+            Destroy(gameObject);
+
+        }else{
+
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+
+        }
 
     }
 

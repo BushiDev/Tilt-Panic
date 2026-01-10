@@ -12,7 +12,16 @@ public class Settings : MonoBehaviour{
 
     void Awake(){
 
-        instance = this;
+        if(instance != null && instance != this){
+
+            Destroy(gameObject);
+
+        }else{
+
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+
+        }
 
     }
 
@@ -40,19 +49,21 @@ public class Settings : MonoBehaviour{
         effectsToggle.isOn = settingsData.effects;
         vibrationsToggle.isOn = settingsData.vibrations;
 
+        if(AudioManager.instance != null) AudioManager.instance.UpdateSettings();
+
     }
 
     public void ToggleMusic(bool value){
 
         settingsData.music = value;
-        AudioManager.instance.UpdateSettings();
+        if(AudioManager.instance != null) AudioManager.instance.UpdateSettings();
 
     }
 
     public void ToggleEffects(bool value){
 
         settingsData.effects = value;
-        AudioManager.instance.UpdateSettings();
+        if(AudioManager.instance != null) AudioManager.instance.UpdateSettings();
 
     }
 

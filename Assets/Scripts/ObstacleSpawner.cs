@@ -12,6 +12,8 @@ public class ObstacleSpawner : MonoBehaviour{
 
     public bool isPaused = true;
 
+    Camera mainCamera;
+
     void Awake(){
 
         if(instance != null && instance != this){
@@ -21,12 +23,15 @@ public class ObstacleSpawner : MonoBehaviour{
         }else{
 
             instance = this;
+            DontDestroyOnLoad(gameObject);
 
         }
 
     }
 
     void Start(){
+
+        mainCamera = Camera.main;
 
         StartCoroutine(SpawnLoop());
 
@@ -47,7 +52,7 @@ public class ObstacleSpawner : MonoBehaviour{
 
             }else{
 
-                yield return new WaitForSeconds(spawnDelay);
+                yield return new WaitForSeconds(0.1f);
 
             }
 
@@ -59,12 +64,10 @@ public class ObstacleSpawner : MonoBehaviour{
     void SpawnObstacle(){
 
         float x = Random.Range(0, 1f);
-        Vector3 pos = Camera.main.ViewportToWorldPoint(new Vector3(x, 1.5f, 0f));
+        Vector3 pos = mainCamera.ViewportToWorldPoint(new Vector3(x, 1.1f, 0f));
         pos.z = 0f;
 
-        Random.seed = Random.Range(int.MinValue, int.MaxValue);
-
-        if(Random.Range(0, 100) > 10){
+        if(Random.Range(0, 100) > 7){
 
             GameObject o = Instantiate(prefab, pos, Quaternion.identity);
             o.GetComponent<Rigidbody2D>().linearVelocity = Vector2.down * fallSpeed;
