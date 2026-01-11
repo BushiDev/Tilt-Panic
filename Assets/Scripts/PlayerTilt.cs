@@ -4,6 +4,8 @@ using System.Collections;
 
 public class PlayerTilt : MonoBehaviour{
 
+    public bool godMode;
+
     public float speed = 20f;
     public float deadZone = 0.02f;
     public SpriteRenderer spriteRenderer;
@@ -13,17 +15,14 @@ public class PlayerTilt : MonoBehaviour{
 
     float currentTilt;
 
-    AudioSource audioSource;
-    Camera mainCamera;
+    public AudioSource audioSource;
+    public Camera mainCamera;
 
     void Start(){
 
 #if UNITY_ANDROID
         InputSystem.EnableDevice(UnityEngine.InputSystem.Accelerometer.current);
 #endif
-
-        audioSource = GetComponent<AudioSource>();
-        mainCamera = Camera.main;
 
     }
 
@@ -59,6 +58,8 @@ public class PlayerTilt : MonoBehaviour{
 
             if(Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(250);
 
+            if(godMode) return;
+
             StartCoroutine(Die());
 
         }
@@ -66,6 +67,8 @@ public class PlayerTilt : MonoBehaviour{
     }
 
     IEnumerator Die(){
+
+        
 
         CameraHitZoom.instance.Hit(transform.position);
         SurvivalTimer.instance.isAlive = false;

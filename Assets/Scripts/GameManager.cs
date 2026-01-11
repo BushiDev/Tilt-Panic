@@ -66,6 +66,9 @@ public class GameManager : MonoBehaviour{
         PlayGamesManager.instance.playerData.totalScore += score;
         SurvivalTimer.instance.lastScoreInvertUpdate = 200;
         SurvivalTimer.instance.lastScoreVibrationUpdate = 100;
+        SurvivalTimer.instance.score = 0;
+        SurvivalTimer.instance.timer = 0f;
+        SurvivalTimer.instance.scoreMultiplier = 0f;
 
         if(score > best){
 
@@ -113,8 +116,8 @@ public class GameManager : MonoBehaviour{
         if(PlayGamesManager.instance.playerSignedIn) PlayGamesManager.instance.LeaderboardUpdate(GPGSIds.leaderboard_top, SurvivalTimer.instance.score);
 
         ShowGameOver(SurvivalTimer.instance.score);
+        SurvivalTimer.instance.glitch.SetActive(false);
         ResetPlayerPosition();
-        
 
         if(Random.Range(0, 100) > 60){
 

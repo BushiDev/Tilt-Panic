@@ -17,6 +17,8 @@ public class Shield : MonoBehaviour{
 
         get{return active;}
         set{
+
+            if(active == value) return;
             
             active = value;
             spriteRenderer.enabled = active;
@@ -54,6 +56,8 @@ public class Shield : MonoBehaviour{
 
         spriteRenderer.enabled = false;
         myCollider.enabled = false;
+
+        active = false;
 
     }
 

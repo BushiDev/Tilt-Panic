@@ -62,12 +62,16 @@ public class Shop : MonoBehaviour{
             if(i == usedData){
 
                 texts[i].text = "Equipped";
+                texts[i].color = Color.gray;
 
             }else if(itemUnlocked){
 
                 texts[i].text = "Owned";
+                texts[i].color = new Color(0.75f, 0.75f, 0.75f, 1f);
 
             }else{
+
+                texts[i].color = Color.white;
 
                 switch(data[i].unlockType){
 
@@ -93,8 +97,6 @@ public class Shop : MonoBehaviour{
 
     }
 
-    //Ta sama funckja co wyzej jeszcze 3 razy dla skinow x 2 i koloru x 1
-
     public void LoadCustomsData(){
 
         playerData = PlayGamesManager.instance.playerData;
@@ -109,55 +111,7 @@ public class Shop : MonoBehaviour{
 
     public void UsePlayerColor(int id){
 
-        Debug.Log("Using player color with id: " + id.ToString());
-
-        CustomColor data = customs.playerColors[id];
-        if(playerData.playerColorsUnlocked[id]){
-
-            Debug.Log("Color owned. Setting up...");
-
-            player.color = data.color;
-            playerData.playerColor = id;
-
-        }else{
-
-            Debug.Log("Color not owned...");
-
-            switch(data.unlockType){
-
-                case UnlockType.SCORE:
-
-                    if(playerData.totalScore >= data.scorePrice){
-
-                        playerData.playerColorsUnlocked[id] = true;
-                        playerData.totalScore -= data.scorePrice;
-                        player.color = data.color;
-                        playerData.playerColor = id;
-
-                    }
-                    break;
-
-                case UnlockType.ADS:
-
-                    AdMob.instance.reward = () => {
-
-                        playerData.playerColorsWatchedAds[id]++;
-                        if(playerData.playerColorsWatchedAds[id] >= data.adsPrice){
-
-                            playerData.playerColorsUnlocked[id] = true;
-
-                        }
-                        
-                    };
-
-                    AdMob.instance.ShowRewardedAd();
-
-                    break; 
-
-            }
-
-        }
-
+        UseColor(id, DataType.PLAYER_COLOR);
         SaveShopData();
 
     }
@@ -219,55 +173,7 @@ public class Shop : MonoBehaviour{
 
     public void UseShieldColor(int id){
 
-        Debug.Log("Using shield color with id: " + id.ToString());
-
-        CustomColor data = customs.shieldColors[id];
-        if(playerData.shieldColorsUnlocked[id]){
-
-            Debug.Log("Color owned. Setting up...");
-
-            shield.color = data.color;
-            playerData.shieldColor = id;
-
-        }else{
-
-            Debug.Log("Color not owned...");
-
-            switch(data.unlockType){
-
-                case UnlockType.SCORE:
-
-                    if(playerData.totalScore >= data.scorePrice){
-
-                        playerData.shieldColorsUnlocked[id] = true;
-                        playerData.totalScore -= data.scorePrice;
-                        shield.color = data.color;
-                        playerData.shieldColor = id;
-
-                    }
-                    break;
-
-                case UnlockType.ADS:
-
-                    AdMob.instance.reward = () => {
-
-                        playerData.shieldColorsWatchedAds[id]++;
-                        if(playerData.shieldColorsWatchedAds[id] >= data.adsPrice){
-
-                            playerData.shieldColorsUnlocked[id] = true;
-
-                        }
-                        
-                    };
-
-                    AdMob.instance.ShowRewardedAd();
-
-                    break; 
-
-            }
-
-        }
-
+        UseColor(id, DataType.SHIELD_COLOR);
         SaveShopData();
 
     }
@@ -327,6 +233,103 @@ public class Shop : MonoBehaviour{
 
     }
 
+    void UseColor(int id, DataType type){
+
+        CustomColor data = type == DataType.PLAYER_COLOR ? customs.playerColors[id] : customs.shieldColors[id];
+
+        if(type == DataType.PLAYER_COLOR){
+
+            if(playerData.playerColorsUnlocked[id]){
+
+                player.color = data.color;
+                playerData.playerColor = id;
+
+            }else{
+
+                switch(data.unlockType){
+
+                    case UnlockType.SCORE:
+
+                        if(playerData.totalScore >= data.scorePrice){
+
+                            playerData.playerColorsUnlocked[id] = true;
+                            playerData.totalScore -= data.scorePrice;
+                            player.color = data.color;
+                            playerData.playerColor = id;
+
+                        }
+                        break;
+
+                    case UnlockType.ADS:
+
+                        AdMob.instance.reward = () => {
+
+                            playerData.playerColorsWatchedAds[id]++;
+                            if(playerData.playerColorsWatchedAds[id] >= data.adsPrice){
+
+                                playerData.playerColorsUnlocked[id] = true;
+
+                            }
+                            
+                        };
+
+                        AdMob.instance.ShowRewardedAd();
+
+                        break; 
+
+                }
+
+            }
+
+        }else{
+
+            if(playerData.shieldColorsUnlocked[id]){
+
+                shield.color = data.color;
+                playerData.shieldColor = id;
+
+            }else{
+
+
+                switch(data.unlockType){
+
+                    case UnlockType.SCORE:
+
+                        if(playerData.totalScore >= data.scorePrice){
+
+                            playerData.shieldColorsUnlocked[id] = true;
+                            playerData.totalScore -= data.scorePrice;
+                            shield.color = data.color;
+                            playerData.shieldColor = id;
+
+                        }
+                        break;
+
+                    case UnlockType.ADS:
+
+                        AdMob.instance.reward = () => {
+
+                            playerData.shieldColorsWatchedAds[id]++;
+                            if(playerData.shieldColorsWatchedAds[id] >= data.adsPrice){
+
+                                playerData.shieldColorsUnlocked[id] = true;
+
+                            }
+                            
+                        };
+
+                        AdMob.instance.ShowRewardedAd();
+
+                        break; 
+
+                }
+
+            }
+
+        }
+
+    }
+
     void SaveShopData(){
 
         PlayGamesManager.instance.playerData = playerData;
@@ -338,8 +341,8 @@ public class Shop : MonoBehaviour{
         }
         PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
         PlayerPrefs.Save();
-        LoadCustomsData();
-        UpdateShopUI();
+        Invoke("LoadCustomsData", 0.5f);
+        Invoke("UpdateShopUI", 0.5f);
 
     }
 
