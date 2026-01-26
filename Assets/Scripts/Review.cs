@@ -28,7 +28,18 @@ public class Review : MonoBehaviour{
 
         yield return request;
 
-        if(request.Error != ReviewErrorCode.NoError) yield break;
+        if(request.Error != ReviewErrorCode.NoError){
+
+            Debug.Log("Review error: " + request.Error);
+
+            Application.OpenURL("https://play.google.com/store/apss/details?id=com.BubbleGamesStudio.TiltPanic");
+
+            PlayerPrefs.SetInt("Review", 1);
+            PlayerPrefs.Save();
+
+            yield break;
+
+        }
 
         reviewInfo = request.GetResult();
 

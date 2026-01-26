@@ -44,12 +44,24 @@ public class GameManager : MonoBehaviour{
             
         }else{
 
-            best = 0;
-            playerData = new PlayerData();
-            PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
-            PlayerPrefs.Save();
+            if(PlayGamesManager.instance.playerSignedIn){
+
+                playerData = PlayGamesManager.instance.playerData;
+                best = playerData.bestScore;
+
+            }else{
+
+                best = 0;
+                playerData = new PlayerData();
+
+            }
 
         }
+
+        PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
+        PlayerPrefs.Save();
+
+        
 
     }
 
