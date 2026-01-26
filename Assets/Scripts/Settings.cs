@@ -8,6 +8,8 @@ public class Settings : MonoBehaviour{
     public Toggle effectsToggle;
     public Toggle vibrationsToggle;
 
+    public Slider sensitivitySlider;
+
     public SettingsData settingsData;
 
     void Awake(){
@@ -48,6 +50,7 @@ public class Settings : MonoBehaviour{
         musicToggle.isOn = settingsData.music;
         effectsToggle.isOn = settingsData.effects;
         vibrationsToggle.isOn = settingsData.vibrations;
+        sensitivitySlider.value = settingsData.sensitivity;
 
         if(AudioManager.instance != null) AudioManager.instance.UpdateSettings();
 
@@ -73,6 +76,12 @@ public class Settings : MonoBehaviour{
 
     }
 
+    public void SetSensitivity(float value){
+
+        settingsData.sensitivity = value;
+
+    }
+
     public void SaveSettings(){
 
         PlayerPrefs.SetString("Settings", JsonUtility.ToJson(settingsData));
@@ -88,12 +97,14 @@ public class SettingsData{
     public bool music;
     public bool effects;
     public bool vibrations;
+    public float sensitivity;
 
     public SettingsData(){
 
         this.music = true;
         this.effects = true;
         this.vibrations = true;
+        this.sensitivity = 1f;
 
     }
 

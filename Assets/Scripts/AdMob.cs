@@ -7,7 +7,7 @@ public class AdMob : MonoBehaviour{
 
     public string bottomBannerId = "ca-app-pub-8369690861079353/9109198592";
     public string deathInterstitialId = "ca-app-pub-8369690861079353/7796116927";
-    public string rewardId = "ca-app-pub-8369690861079353/1135533322";
+    public string rewardId = "ca-app-pub-8369690861079353/4881021429";
 
     public AdPosition bannerPosition;
 
@@ -91,6 +91,8 @@ public class AdMob : MonoBehaviour{
 
     public void ShowFullscreenAd(){
 
+        if(!DevModeManager.instance.showAds) return;
+
         if(interstitialAd != null && interstitialAd.CanShowAd()){
 
             Time.timeScale = 0f;
@@ -107,24 +109,31 @@ public class AdMob : MonoBehaviour{
 
         RewardedAd.Load(rewardId, adRequest, (RewardedAd ad, LoadAdError error) => {
 
-            if(error != null) return;
+            if(error != null){
 
-            if(rewardedAd != null){
+                Debug.Log("Rewarded Ad Error: " + error.ToString());
 
-                rewardedAd.OnAdFullScreenContentFailed -= RewardFailed;
-                rewardedAd.OnAdFullScreenContentClosed -= ResumeGame;
-                rewardedAd.OnAdFullScreenContentClosed -= RewardClosed;
+            }else{
+
+                if(rewardedAd != null){
+
+                    rewardedAd.OnAdFullScreenContentFailed -= RewardFailed;
+                    rewardedAd.OnAdFullScreenContentClosed -= ResumeGame;
+                    rewardedAd.OnAdFullScreenContentClosed -= RewardClosed;
+
+                }
+                rewardedAd = ad;
+
+                if(rewardedAd != null){
+
+                    rewardedAd.OnAdFullScreenContentFailed += RewardFailed;
+                    rewardedAd.OnAdFullScreenContentClosed += ResumeGame;
+                    rewardedAd.OnAdFullScreenContentClosed += RewardClosed;
+
+                }
 
             }
-            rewardedAd = ad;
 
-            if(rewardedAd != null){
-
-                rewardedAd.OnAdFullScreenContentFailed += RewardFailed;
-                rewardedAd.OnAdFullScreenContentClosed += ResumeGame;
-                rewardedAd.OnAdFullScreenContentClosed += RewardClosed;
-
-            }
 
         });
 
@@ -146,6 +155,8 @@ public class AdMob : MonoBehaviour{
     }
 
     public void ShowRewardedAd(){
+
+        if(!DevModeManager.instance.showAds) return;
 
         if(rewardedAd != null && rewardedAd.CanShowAd()){
 

@@ -45,8 +45,8 @@ public class ObstacleSpawner : MonoBehaviour{
 
                 SpawnObstacle();
 
-                spawnDelay = Mathf.Max(0.3f, spawnDelay - 0.015f);
-                fallSpeed += 0.075f;
+                spawnDelay = Mathf.Max(0.4f, spawnDelay - 0.0115f);
+                fallSpeed = Mathf.Min(5f, fallSpeed + 0.055f);
 
                 yield return new WaitForSeconds(spawnDelay);
 

@@ -66,7 +66,12 @@ public class Shield : MonoBehaviour{
         if(collider.gameObject.tag.Equals("Obstacle")){
 
             Destroy(collider.gameObject);
+
+            if(DevModeManager.instance.infiniteShield) return;
+
             isActive = false;
+            AchievementsCollector.instance.shieldsCollected = 0;
+            SurvivalTimer.instance.shieldCombo = 1;
 
         }
 

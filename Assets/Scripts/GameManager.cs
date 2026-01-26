@@ -12,6 +12,10 @@ public class GameManager : MonoBehaviour{
 
     public GameObject newBestScore;
 
+    public bool devModeWasEnabled;
+
+    PlayerData playerData;
+
     void Awake(){
 
         if(instance != null && instance != this){
@@ -33,13 +37,16 @@ public class GameManager : MonoBehaviour{
         ObstacleSpawner.instance.isPaused = true;     
 
         if(PlayerPrefs.HasKey("PlayerData")){
+
+            playerData = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("PlayerData"));
             
-            best = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("PlayerData")).bestScore;
+            best = playerData.bestScore;
             
         }else{
 
             best = 0;
-            PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(new PlayerData()));
+            playerData = new PlayerData();
+            PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
             PlayerPrefs.Save();
 
         }
@@ -47,6 +54,13 @@ public class GameManager : MonoBehaviour{
     }
 
     public void StartGame(){
+
+        if(PlayerPrefs.HasKey("FirstLaunch") && PlayerPrefs.GetInt("FirstLaunch") == 0){
+            
+            FirstLaunch();
+            return;
+            
+        }
 
         SurvivalTimer.instance.isAlive = true;
         ObstacleSpawner.instance.isPaused = false;
@@ -63,8 +77,8 @@ public class GameManager : MonoBehaviour{
 
         newBestScore.SetActive(score > best);
 
-        PlayGamesManager.instance.playerData.totalScore += score;
-        SurvivalTimer.instance.lastScoreInvertUpdate = 200;
+        if(!devModeWasEnabled) PlayGamesManager.instance.playerData.totalScore += score;
+        //SurvivalTimer.instance.lastScoreInvertUpdate = 200;
         SurvivalTimer.instance.lastScoreVibrationUpdate = 100;
         SurvivalTimer.instance.score = 0;
         SurvivalTimer.instance.timer = 0f;
@@ -73,6 +87,8 @@ public class GameManager : MonoBehaviour{
         if(score > best){
 
             best = score;
+
+            if(devModeWasEnabled) return;
 
             if(PlayGamesManager.instance != null){
 
@@ -104,8 +120,16 @@ public class GameManager : MonoBehaviour{
 
         if(AchievementsCollector.instance != null){
 
+            if(devModeWasEnabled) return;
+
             AchievementsCollector.instance.useTimer = false;
             AchievementsCollector.instance.OnDeath();
+
+        }
+
+        if(PlayerPrefs.HasKey("Review") && PlayerPrefs.GetInt("Review") == 0 && Time.time > 300f){
+
+            UIController.instance.ShowSelected(9);
 
         }
 
@@ -113,11 +137,13 @@ public class GameManager : MonoBehaviour{
 
     public void GameOver(){
 
-        if(PlayGamesManager.instance.playerSignedIn) PlayGamesManager.instance.LeaderboardUpdate(GPGSIds.leaderboard_top, SurvivalTimer.instance.score);
+        if(PlayGamesManager.instance.playerSignedIn && !devModeWasEnabled) PlayGamesManager.instance.LeaderboardUpdate(GPGSIds.leaderboard_tilt_legends, SurvivalTimer.instance.score);
 
         ShowGameOver(SurvivalTimer.instance.score);
         SurvivalTimer.instance.glitch.SetActive(false);
         ResetPlayerPosition();
+
+        if(devModeWasEnabled) return;
 
         if(Random.Range(0, 100) > 60){
 
@@ -148,6 +174,36 @@ public class GameManager : MonoBehaviour{
             Destroy(go);
 
         }
+
+    }
+
+    void FirstLaunch(){
+
+        UIController.instance.ShowSelected(8);
+        Invoke("HideTooltip", 3f);
+
+    }
+
+    void HideTooltip(){
+
+        PlayerPrefs.SetInt("FirstLaunch", 1);
+        PlayerPrefs.Save();
+
+        if(devModeWasEnabled) return;
+
+        if(PlayGamesManager.instance != null){
+
+            if(PlayGamesManager.instance.playerSignedIn) PlayGamesManager.instance.SaveGameData();
+
+        }
+
+        PlayerData p = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("PlayerData"));
+        
+        PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(p));
+        PlayerPrefs.Save();
+
+        UIController.instance.HideSelected(8);
+        StartGame();
 
     }
 

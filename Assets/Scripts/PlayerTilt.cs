@@ -4,7 +4,7 @@ using System.Collections;
 
 public class PlayerTilt : MonoBehaviour{
 
-    public bool godMode;
+    public static PlayerTilt instance;
 
     public float speed = 20f;
     public float deadZone = 0.02f;
@@ -18,6 +18,25 @@ public class PlayerTilt : MonoBehaviour{
     public AudioSource audioSource;
     public Camera mainCamera;
 
+    public bool saveByInvert;
+
+    float rawTilt;
+
+    void Awake(){
+
+        if(instance != null && instance != this){
+
+            Destroy(gameObject);
+
+        }else{
+
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+
+        }
+
+    }
+
     void Start(){
 
 #if UNITY_ANDROID
@@ -29,14 +48,12 @@ public class PlayerTilt : MonoBehaviour{
     void Update(){
 
         if(ObstacleSpawner.instance.isPaused) return;
-#if UNITY_EDITOR
-        float rawTilt = Random.Range(-1f, 1f);
-#else
-        float rawTilt = Accelerometer.current.acceleration.ReadValue().x;
-#endif
+        if(DevModeManager.instance.devModeEnabled) rawTilt = Keyboard.current.aKey.isPressed ? -1f : Keyboard.current.dKey.isPressed ? 1f : 0f;
+        else rawTilt = Accelerometer.current.acceleration.ReadValue().x;
+
         if(Mathf.Abs(rawTilt) < deadZone) rawTilt = 0f;
         currentTilt = Mathf.Lerp(currentTilt, rawTilt, Time.deltaTime * smooth);
-        transform.position += Vector3.right * currentTilt * speed * Time.deltaTime;
+        transform.position += Vector3.right * currentTilt * speed * Time.deltaTime * Settings.instance.settingsData.sensitivity * Time.timeScale;
         ClampToScreen();
 
     }
@@ -52,13 +69,13 @@ public class PlayerTilt : MonoBehaviour{
 
     void OnTriggerEnter2D(Collider2D collider2D){
 
-        if(collider2D.tag.Equals("Obstacle")){
+        if(DevModeManager.instance.godMode) return;
+
+        if(collider2D.tag.Equals("Obstacle") && !saveByInvert){
 
             audioSource.Play();
 
             if(Settings.instance.settingsData.vibrations) RDG.Vibration.Vibrate(250);
-
-            if(godMode) return;
 
             StartCoroutine(Die());
 
@@ -67,8 +84,6 @@ public class PlayerTilt : MonoBehaviour{
     }
 
     IEnumerator Die(){
-
-        
 
         CameraHitZoom.instance.Hit(transform.position);
         SurvivalTimer.instance.isAlive = false;

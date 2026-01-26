@@ -24,6 +24,7 @@ public class ShieldItem : Obstacle{
                 if(Shield.instance.isActive == true){
 
                     SurvivalTimer.instance.AddShieldPoints();
+                    AchievementsCollector.instance.shieldsCollected++;
 
                 }else{
 

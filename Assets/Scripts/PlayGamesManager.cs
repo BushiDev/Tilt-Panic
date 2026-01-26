@@ -31,6 +31,13 @@ public class PlayGamesManager : MonoBehaviour{
 
     void Start(){
 
+        if(!PlayerPrefs.HasKey("FirstLaunch")){
+
+            PlayerPrefs.SetInt("FirstLaunch", 0);
+            PlayerPrefs.Save();
+
+        }
+
         PlayGamesPlatform.Activate();
         Login();
     }
@@ -61,7 +68,7 @@ public class PlayGamesManager : MonoBehaviour{
 
                 }
 
-                if(!PlayerPrefs.HasKey("PlayerData") ||  string.IsNullOrEmpty(PlayerPrefs.GetString("PlayerData"))){
+                if(!PlayerPrefs.HasKey("PlayerData") || string.IsNullOrEmpty(PlayerPrefs.GetString("PlayerData"))){
 
                     playerData = new PlayerData();
                     PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
@@ -74,12 +81,15 @@ public class PlayGamesManager : MonoBehaviour{
                     if(playerData.version != (new PlayerData()).version){
 
                         playerData = RestoreVersion(playerData);
+                        PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
+                        PlayerPrefs.Save();
 
                     }
 
                 }
 
                 Shop.instance.LoadCustomsData();
+                UIController.instance.ShowSelected(3);
 
             }
 
@@ -95,14 +105,14 @@ public class PlayGamesManager : MonoBehaviour{
         t.totalScore = playerData.totalScore;
 
         t.playerColorsUnlocked = RestoreBoolArray(playerData.playerColorsUnlocked, 9);
-        t.playerSkinsUnlocked  = RestoreBoolArray(playerData.playerSkinsUnlocked, 6);
+        t.playerSkinsUnlocked  = RestoreBoolArray(playerData.playerSkinsUnlocked, 12);
         t.shieldColorsUnlocked = RestoreBoolArray(playerData.shieldColorsUnlocked, 9);
         t.shieldSkinsUnlocked  = RestoreBoolArray(playerData.shieldSkinsUnlocked, 3);
 
-        t.playerSkinsWatchedAds = playerData.playerSkinsWatchedAds;
-        t.playerColorsWatchedAds = playerData.playerColorsWatchedAds;
-        t.shieldSkinsWatchedAds = playerData.shieldSkinsWatchedAds;
-        t.shieldColorsWatchedAds = playerData.shieldColorsWatchedAds;
+        t.playerSkinsWatchedAds = RestoreIntArray(playerData.playerSkinsWatchedAds, 12);
+        t.playerColorsWatchedAds = RestoreIntArray(playerData.playerColorsWatchedAds, 9);
+        t.shieldSkinsWatchedAds = RestoreIntArray(playerData.shieldSkinsWatchedAds, 3);
+        t.shieldColorsWatchedAds = RestoreIntArray(playerData.shieldColorsWatchedAds, 9);
 
         t.playerColor = playerData.playerColor;
         t.playerSkin = playerData.playerSkin;
@@ -114,6 +124,8 @@ public class PlayGamesManager : MonoBehaviour{
     }
 
     public void LeaderboardUpdate(string id, int value){
+
+        if(GameManager.instance.devModeWasEnabled) return;
 
         if(!playerSignedIn) return;
 
@@ -153,6 +165,8 @@ public class PlayGamesManager : MonoBehaviour{
 
     public void CollectAchievement(string id){
 
+        if(GameManager.instance.devModeWasEnabled) return;
+
         if(!playerSignedIn) return;
 
         PlayGamesPlatform.Instance.ReportProgress(id, 100.0f, (bool success) => {
@@ -164,6 +178,8 @@ public class PlayGamesManager : MonoBehaviour{
     }
 
     public void SaveGameData(){
+
+        if(GameManager.instance.devModeWasEnabled) return;
 
         if(!playerSignedIn) return;
 
@@ -196,9 +212,27 @@ public class PlayGamesManager : MonoBehaviour{
 
                 if(data == null || data.Length == 0){
 
-                    playerData = new PlayerData();
-                    PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
-                    PlayerPrefs.Save();
+                    if(PlayerPrefs.HasKey("PlayerData")){
+
+                        playerData = JsonUtility.FromJson<PlayerData>(PlayerPrefs.GetString("PlayerData"));
+                        if(playerData.version != (new PlayerData()).version){
+
+                            playerData = RestoreVersion(playerData);
+
+                        }
+                        PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
+                        PlayerPrefs.Save();
+                        
+
+                    }else{
+
+                        playerData = new PlayerData();
+                        PlayerPrefs.SetString("PlayerData", JsonUtility.ToJson(playerData));
+                        PlayerPrefs.Save();
+
+                    }
+
+                    UIController.instance.ShowSelected(0);
                     
                 }else{
 
@@ -218,6 +252,8 @@ public class PlayGamesManager : MonoBehaviour{
 
                 }
 
+                UIController.instance.ShowSelected(0);
+
             });
 
         });
@@ -227,6 +263,22 @@ public class PlayGamesManager : MonoBehaviour{
     bool[] RestoreBoolArray(bool[] oldArr, int newSize){
 
         bool[] arr = new bool[newSize];
+        if(oldArr != null){
+
+            for(int i = 0; i < Mathf.Min(oldArr.Length, newSize); i++){
+
+                arr[i] = oldArr[i];
+
+            }
+
+        }
+
+        return arr;
+    }
+
+    int[] RestoreIntArray(int[] oldArr, int newSize){
+
+        int[] arr = new int[newSize];
         if(oldArr != null){
 
             for(int i = 0; i < Mathf.Min(oldArr.Length, newSize); i++){
@@ -268,7 +320,7 @@ public class PlayerData{
 
     public PlayerData(){
 
-        version = 1;
+        version = 3;
 
         totalScore = 0;
 
@@ -277,7 +329,7 @@ public class PlayerData{
         playerColorsUnlocked = new bool[9];
         playerColorsUnlocked[0] = true;
 
-        playerSkinsUnlocked = new bool[6];
+        playerSkinsUnlocked = new bool[12];
         playerSkinsUnlocked[0] = true;
 
         shieldColorsUnlocked = new bool[9];
@@ -287,7 +339,7 @@ public class PlayerData{
         shieldSkinsUnlocked[0] = true;
 
         playerColorsWatchedAds = new int[9];
-        playerSkinsWatchedAds = new int[6];
+        playerSkinsWatchedAds = new int[12];
         shieldColorsWatchedAds = new int[9];
         shieldSkinsWatchedAds = new int[3];
 

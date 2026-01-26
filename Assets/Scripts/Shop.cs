@@ -57,7 +57,29 @@ public class Shop : MonoBehaviour{
 
         for(int i = 0; i < data.Length; i++){
 
-            bool itemUnlocked = dataType == DataType.PLAYER_COLOR ? playerData.playerColorsUnlocked[i] : dataType == DataType.PLAYER_SKIN ? playerData.playerSkinsUnlocked[i] : dataType == DataType.SHIELD_COLOR ? playerData.shieldColorsUnlocked[i] : playerData.shieldSkinsUnlocked[i];
+            //bool itemUnlocked = dataType == DataType.SHIELD_COLOR ? playerData.shieldColorsUnlocked[i] : playerData.shieldSkinsUnlocked[i];
+
+            bool itemUnlocked = false;
+
+            switch(dataType){
+
+                case DataType.PLAYER_COLOR:
+                    itemUnlocked = playerData.playerColorsUnlocked[i];
+                    break;
+
+                case DataType.PLAYER_SKIN:
+                    itemUnlocked = playerData.playerSkinsUnlocked[i];
+                    break;
+                
+                case DataType.SHIELD_COLOR:
+                    itemUnlocked = playerData.shieldColorsUnlocked[i];
+                    break;
+
+                case DataType.SHIELD_SKIN:
+                    itemUnlocked = playerData.shieldSkinsUnlocked[i];
+                    break;
+
+            }
 
             if(i == usedData){
 
@@ -106,6 +128,8 @@ public class Shop : MonoBehaviour{
 
         shield.sprite = customs.shieldSkins[playerData.shieldSkin].texture;
         shield.color = customs.shieldColors[playerData.shieldColor].color;
+
+        Debug.Log("PlayerData: " + JsonUtility.ToJson(playerData, true), this);
 
     }
 

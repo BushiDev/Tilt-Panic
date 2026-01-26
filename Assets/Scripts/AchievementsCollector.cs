@@ -10,7 +10,9 @@ public class AchievementsCollector : MonoBehaviour{
 
     public bool useTimer;
 
-    const int VERSION = 1;
+    public int shieldsCollected;
+
+    const int VERSION = 2;
 
     void Awake(){
 
@@ -59,15 +61,20 @@ public class AchievementsCollector : MonoBehaviour{
 
     void Update(){
 
+        if(GameManager.instance.devModeWasEnabled) return;
+
         if(!useTimer || !PlayGamesManager.instance.playerSignedIn || AC.allTimeCollected) return;
 
         timer += Time.deltaTime;
 
         CheckTimeAchievements();
+        CheckShieldAchievements();
 
     }
 
     void CheckTimeAchievements(){
+
+        if(GameManager.instance.devModeWasEnabled) return;
 
         if(!AC.allTimeCollected) AC.allTimeCollected = (AC.collected[(int)AchievementID.StillAlive] && AC.collected[(int)AchievementID.RealSurvivor]);
 
@@ -89,7 +96,28 @@ public class AchievementsCollector : MonoBehaviour{
 
     }
 
+    void CheckShieldAchievements(){
+
+        if(GameManager.instance.devModeWasEnabled) return;
+
+        if(!AC.collected[(int)AchievementID.MultiShield]){
+
+            if(Shield.instance.isActive && shieldsCollected >= 5){
+
+                AC.collected[(int)AchievementID.MultiShield] = true;
+                PlayGamesManager.instance.CollectAchievement(GPGSIds.achievement_multi_shield);
+
+            }
+
+        }
+
+    }
+
     public void OnDeath(){
+
+        if(GameManager.instance.devModeWasEnabled) return;
+
+        shieldsCollected = 0;
 
         if(!PlayGamesManager.instance.playerSignedIn) return;
 
@@ -115,6 +143,8 @@ public class AchievementsCollector : MonoBehaviour{
 
     void OnApplicationPause(bool pause){
 
+        if(GameManager.instance.devModeWasEnabled) return;
+
         if(!pause) return;
 
         PlayerPrefs.SetString("AchievementsCollected", JsonUtility.ToJson(AC));
@@ -127,7 +157,7 @@ public class AchievementsCollector : MonoBehaviour{
 [System.Serializable]
 public class AchievementsCollected{
 
-    public int version = 1;
+    public int version = 3;
 
     public bool[] collected;
 
@@ -135,7 +165,7 @@ public class AchievementsCollected{
 
     public AchievementsCollected(){
 
-        collected = new bool[4];
+        collected = new bool[5];
         allTimeCollected = false;
 
     }
@@ -146,5 +176,6 @@ public enum AchievementID{
     StillAlive = 0,
     RealSurvivor = 1,
     FirstBlood = 2,
-    TooFast = 3
+    TooFast = 3,
+    MultiShield = 4
 }
